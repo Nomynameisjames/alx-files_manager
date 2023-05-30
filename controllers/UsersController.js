@@ -19,7 +19,8 @@ import dbClient from '../utils/db';
 
 class UsersController {
   static async postNew(request, response) {
-    const { email, password } = request.body;
+    const { email } = request.body;
+    const { password } = request.body;
     if (!email) return response.status(400).send({ error: 'Missing email' });
     if (!password) return response.status(400).send({ error: 'Missing password' });
 
@@ -38,4 +39,4 @@ class UsersController {
   }
 }
 
-export default UsersController;
+module.exports = UsersController;
