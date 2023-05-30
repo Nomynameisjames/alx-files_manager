@@ -1,4 +1,4 @@
-/* import redisClient from './utils/redis';
+ import redisClient from './utils/redis';
 
 (async () => {
     console.log(redisClient.isAlive());
@@ -9,9 +9,9 @@
     setTimeout(async () => {
         console.log(await redisClient.get('myKey'));
     }, 1000*10)
-})(); */
+})();
 
-import dbClient from './utils/db';
+/*import dbClient from './utils/db';
 
 const waitConnection = () => new Promise((resolve, reject) => {
   let i = 0;
@@ -36,4 +36,4 @@ const waitConnection = () => new Promise((resolve, reject) => {
   console.log(dbClient.isAlive());
   console.log(await dbClient.nbUsers());
   console.log(await dbClient.nbFiles());
-})();
+})();*/

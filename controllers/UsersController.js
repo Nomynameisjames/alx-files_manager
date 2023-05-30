@@ -15,7 +15,9 @@
  */
 
 import sha1 from 'sha1';
+import { ObjectID } from 'mongodb';
 import dbClient from '../utils/db';
+import redisClient from '../utils/redis';
 
 class UsersController {
   static async postNew(request, response) {
@@ -34,9 +36,23 @@ class UsersController {
   }
 
   static async getMe(request, response) {
-    const { userId } = request;
-    const user = await dbClient.users.findOne({ _id: userId });
-    return response.status(200).json({ id: user._id, email: user.email });
+    const token = request.header('X-Token');
+    const key = `auth_${token}`;
+    const userId = await redisClient.get(key);
+    if (userId) {
+      const users = dbClient.db.collection('users');
+      const idObject = new ObjectID(userId);
+      users.findOne({ _id: idObject }, (err, user) => {
+        if (user) {
+          response.status(200).json({ id: userId, email: user.email });
+        } else {
+          response.status(401).json({ error: 'Unauthorized' });
+        }
+      });
+    } else {
+      console.log('Hupatikani!');
+      response.status(401).json({ error: 'Unauthorized' });
+    }
   }
 }
 
