@@ -21,21 +21,22 @@ class UsersController {
   static async postNew(request, response) {
     const { email } = request.body;
     const { password } = request.body;
-    if (!email) return response.status(400).send({ error: 'Missing email' });
-    if (!password) return response.status(400).send({ error: 'Missing password' });
+    if (!email) return response.status(400).json({ error: 'Missing email' });
+    if (!password) return response.status(400).json({ error: 'Missing password' });
 
-    const emailExist = await dbClient.users.findOne({ email });
-    if (emailExist) return response.status(400).send({ error: 'Already exist' });
+    const users = await dbClient.db.collection('users');
+    const emailExist = users.findOne({ email });
+    if (emailExist) return response.status(400).json({ error: 'Already exist' });
 
     const hashPassword = sha1(password);
-    const user = await dbClient.users.insertOne({ email, password: hashPassword });
-    return response.status(201).send({ id: user.insertedId, email });
+    const user = users.insertOne({ email, password: hashPassword });
+    return response.status(201).json({ id: user.insertedId, email });
   }
 
   static async getMe(request, response) {
     const { userId } = request;
     const user = await dbClient.users.findOne({ _id: userId });
-    return response.status(200).send({ id: user._id, email: user.email });
+    return response.status(200).json({ id: user._id, email: user.email });
   }
 }
 
