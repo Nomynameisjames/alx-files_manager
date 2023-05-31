@@ -15,6 +15,7 @@
  * finally After the class definition, create and export an instance of
    RedisClient called redisClient
  */
+
 import { createClient } from 'redis';
 import { promisify } from 'util';
 
@@ -29,6 +30,9 @@ class RedisClient {
     this.client.on('connect', () => {
       this.isClientConnected = true;
     });
+    this.client.on('close', () => {
+      this.isClientConnected = false;
+    });
   }
 
   isAlive() {
@@ -36,18 +40,28 @@ class RedisClient {
   }
 
   async get(key) {
+    if (!this.isClientConnected) {
+      throw new Error('Redis client is not connected');
+    }
     return promisify(this.client.GET).bind(this.client)(key);
   }
 
   async set(key, value, duration) {
+    if (!this.isClientConnected) {
+      throw new Error('Redis client is not connected');
+    }
     await promisify(this.client.SETEX)
       .bind(this.client)(key, duration, value);
   }
 
   async del(key) {
+    if (!this.isClientConnected) {
+      throw new Error('Redis client is not connected');
+    }
     await promisify(this.client.DEL).bind(this.client)(key);
   }
 }
 
 const redisClient = new RedisClient();
 module.exports = redisClient;
+
