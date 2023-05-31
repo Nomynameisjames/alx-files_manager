@@ -19,7 +19,7 @@ import { createClient } from 'redis';
 import { promisify } from 'util';
 
 class RedisClient {
-  constructor() {
+ constructor() {
     this.client = createClient();
     this.isClientConnected = true;
     this.client.on('error', (err) => {
@@ -49,5 +49,5 @@ class RedisClient {
   }
 }
 
-export const redisClient = new RedisClient();
-export default redisClient;
+const redisClient = new RedisClient();
+module.exports = redisClient;
