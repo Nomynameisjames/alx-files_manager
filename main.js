@@ -36,4 +36,4 @@ const waitConnection = () => new Promise((resolve, reject) => {
   console.log(dbClient.isAlive());
   console.log(await dbClient.nbUsers());
   console.log(await dbClient.nbFiles());
-})();*/
+})()*/;
